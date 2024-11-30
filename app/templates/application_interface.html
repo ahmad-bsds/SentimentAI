@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Insights Platform</title>
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #00ffff;
+            --secondary-color: #0077be;
+            --bg-dark: #0a0a1a;
+            --card-bg: rgba(15, 15, 50, 0.8);
+            --text-light: #e0e0ff;
+            --gradient-primary: linear-gradient(135deg, #00ffff, #4facfe);
+            --gradient-secondary: linear-gradient(135deg, #ff6b6b, #ff9a6b);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark), #0c0c2a);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            padding: 30px;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.3);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .input-section, .insights-section {
+            background: rgba(20, 20, 70, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .file-upload-container {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px dashed var(--primary-color);
+            color: var(--primary-color);
+            text-align: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(30, 30, 80, 0.6);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .fire-gemma-btn {
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            margin-top: auto;
+        }
+
+        .sentiment-distribution {
+            background: rgba(30, 30, 80, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sentiment-distribution h3 {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 250px;
+            height: 200px;
+        }
+
+        .recommendations {
+            background: rgba(30, 30, 80, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .recommendations h3 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .recommendations ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            padding: 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .recommendations li:last-child {
+            border-bottom: none;
+        }
+
+        .download-report-btn {
+            background: var(--gradient-primary);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="grid-layout">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="section-header">
+                    <i class="ri-upload-cloud-line"></i>
+                    <h2>Data Input</h2>
+                </div>
+
+                <div class="file-upload-container">
+                    <input type="file" class="file-upload-input" id="fileUpload" accept=".json">
+                    <div class="file-upload-btn">
+                        <i class="ri-upload-line"></i>
+                        Upload JSON File
+                    </div>
+                </div>
+
+                <textarea class="input-field" rows="4" placeholder="Enter your analysis prompt..."></textarea>
+
+                <button class="fire-gemma-btn">
+                    <i class="ri-fire-line"></i> Fire Gemma 2
+                </button>
+            </div>
+
+            <!-- Insights Section -->
+            <div class="insights-section">
+                <div class="section-header">
+                    <i class="ri-dashboard-line"></i>
+                    <h2>Insights Dashboard</h2>
+                </div>
+
+                <div class="sentiment-distribution">
+                    <h3>Sentiment Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="sentimentPieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="recommendations">
+                    <h3>Growth Recommendations</h3>
+                    <ul id="recommendationsList">
+                        <li><i class="ri-arrow-right-s-line"></i> Awaiting analysis...</li>
+                    </ul>
+                </div>
+
+                <button class="download-report-btn hidden" id="downloadReportBtn">
+                    <i class="ri-download-cloud-line"></i> Download Insights Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File Upload Handler
+        document.querySelector('.file-upload-btn').addEventListener('click', () => {
+            document.getElementById('fileUpload').click();
+        });
+
+        document.getElementById('fileUpload').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            const fileUploadBtn = document.querySelector('.file-upload-btn');
+            
+            if (file) {
+                fileUploadBtn.innerHTML = `
+                    <i class="ri-file-text-line"></i> 
+                    ${file.name}
+                `;
+            }
+        });
+
+        // Pie Chart Configuration
+        const sentimentData = {
+            labels: ['Positive', 'Neutral', 'Negative'],
+            datasets: [{
+                data: [65, 25, 10],
+                backgroundColor: [
+                    '#4bc0c0',   // Positive
+                    '#ffce56',   // Neutral
+                    '#ff6384'    // Negative
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const ctx = document.getElementById('sentimentPieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: sentimentData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#e0e0ff',
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Fire Gemma 2 Button
+        document.querySelector('.fire-gemma-btn').addEventListener('click', function() {
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = `
+                <li><i class="ri-arrow-right-s-line"></i> Improve customer engagement strategies</li>
+                <li><i class="ri-arrow-right-s-line"></i> Develop targeted marketing campaigns</li>
+                <li><i class="ri-arrow-right-s-line"></i> Focus on product feature refinements</li>
+                <li><i class="ri-arrow-right-s-line"></i> Enhance social media presence</li>
+            `;
+
+            // Show download report button
+            document.getElementById('downloadReportBtn').classList.remove('hidden');
+        });
+
+        // Download Report Button
+        document.getElementById('downloadReportBtn').addEventListener('click', function() {
+            const insights = {
+                sentimentDistribution: {
+                    positive: 65,
+                    neutral: 25,
+                    negative: 10
+                },
+                recommendations: [
+                    "Improve customer engagement strategies",
+                    "Develop targeted marketing campaigns",
+                    "Focus on product feature refinements",
+                    "Enhance social media presence"
+                ]
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(insights, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "sentiment_insights_report.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+    </script>
+</body>
+</html>
