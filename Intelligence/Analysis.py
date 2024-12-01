@@ -9,7 +9,14 @@ data["y"] = ""
 
 
 # TODO: Import sentimental function
-for col in data["sentiment"]:
-    print(col)
+for text in data["text"]:
+    for y in data["text"]:
+        y = text.apply(analyze_sentiment)
 
+data["y"] = data["text"].apply(analyze_sentiment)
+
+# TODO: Analyze sentiment through pandas.
+print(
+    data["y"]
+)
 
