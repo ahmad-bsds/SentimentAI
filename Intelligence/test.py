@@ -1,9 +1,8 @@
-# import datasets
-from transformers import pipeline
-from transformers.pipelines.pt_utils import KeyDataset
-from tqdm.auto import tqdm
+from langchain.agents import create_pandas_dataframe_agent
+from langchain.llms import OpenAI
 
-pipe = pipeline("text-classification", model="FacebookAI/roberta-large-mnli", device=0)
-# dataset = datasets.load_dataset("superb", name="asr", split="test")
+# Initialize the LLM
+llm = OpenAI(model="gpt-4", temperature=0)
 
-pipe(["This restaurant is awesome", "This restaurant is awful"])
+# Create a pandas DataFrame agent
+agent = create_pandas_dataframe_agent(llm, df, verbose=True)
