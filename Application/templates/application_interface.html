@@ -236,10 +236,10 @@
                 </div>
 
                 <div class="file-upload-container">
-                    <input type="file" class="file-upload-input" id="fileUpload" accept=".json">
+                    <input type="file" class="file-upload-input" id="fileUpload" accept=".xlxs, .csv">
                     <div class="file-upload-btn">
                         <i class="ri-upload-line"></i>
-                        Upload JSON File
+                        Upload xlxs, CSV File
                     </div>
                 </div>
 
@@ -279,36 +279,50 @@
     </div>
 
     <script>
-        // File Upload Handler
-        document.querySelector('.file-upload-btn').addEventListener('click', () => {
-            document.getElementById('fileUpload').click();
-        });
-
-        document.getElementById('fileUpload').addEventListener('change', (event) => {
+            document.getElementById('fileUpload').addEventListener('change', (event) => {
             const file = event.target.files[0];
-            const fileUploadBtn = document.querySelector('.file-upload-btn');
-
             if (file) {
-                fileUploadBtn.innerHTML = `
-                    <i class="ri-file-text-line"></i>
-                    ${file.name}
-                `;
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // Send file to the Flask server
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(`Error: ${data.error}`);
+                        return;
+                    }
+
+                    // Update chart with new data
+                    const chart = Chart.getChart('sentimentPieChart');
+                    chart.data.labels = data.y;
+                    chart.data.datasets[0].data = data.Count;
+                    chart.update();
+                })
+                .catch(error => console.error('Error uploading file:', error));
             }
         });
 
-        // Pie Chart Configuration
-        const sentimentData = {
-            labels: ['Positive', 'Neutral', 'Negative'],
-            datasets: [{
-                data: [65, 25, 10],
-                backgroundColor: [
-                    '#4A90E2',   // Positive
-                    '#7ED6DF',   // Neutral
-                    '#FF6B6B'    // Negative
-                ],
-                hoverOffset: 4
-            }]
-        };
+    // Data variable from Flask
+    const data = {{ data | tojson }};
+
+    // Pie Chart Configuration
+    const sentimentData = {
+        labels: data.y,
+        datasets: [{
+            data: data.Count,
+            backgroundColor: [
+                '#4A90E2',   // Positive
+                '#7ED6DF',   // Neutral
+                '#FF6B6B'    // Negative
+            ],
+            hoverOffset: 4
+        }]
+    };
 
         const ctx = document.getElementById('sentimentPieChart').getContext('2d');
         new Chart(ctx, {

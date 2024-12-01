@@ -1,12 +1,12 @@
 import os
 from langchain.prompts import ChatPromptTemplate
-from ai_engine import groq_api
+from Intelligence.ai_engine import groq_api
 from utils import get_logger
 
 # Adding a logger
 logger = get_logger(__name__)
 
-# Adding Gemma model from groqapi
+# Adding Gemma model from groq api
 groq_llm = groq_api()
 
 
@@ -33,6 +33,7 @@ def analyze_sentiment(text):
         - Return only the sentiment in the output.
         - Do not hallucinate.
         - Think before decision making, and always provide correct answer.
+        - Don't include other character like: \n, \t, etc.
         - Do not make variations in sentiment, make your answer final.
         _ Only add 'Positive', 'Negative','Irrelevant' and 'Neutral' word.
         """
