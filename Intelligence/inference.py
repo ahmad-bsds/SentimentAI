@@ -4,20 +4,25 @@
 # return sentimental analysis and recommendation
 # TODO:Write a function which gets xlxs, csv files and returns
 #  recommendation and sentimental analysis.
+
+
 import os
-from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
-from langchain.chains import LLMChain
+from ai_engine import groq_api
+
+groq_llm = groq_api()
+
 
 # Function to perform sentiment analysis
 def analyze_sentiment(text):
-    # Initialize the ChatOpenAI model
+    """
+    Function to perform sentiment analysis.
+    
+    :param text: text
+    :return: sentiment decision
+    """""
 
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0,
-                     openai_api_key="sk-proj-3mNWK2IWefjWxc_JqGYDtDMf78u6dLTyOOshehwu"
-                                    "SUxaK2RLcAsVXi3OLo0T5keRRexACuVBM9T3BlbkF"
-                                    "JY3DOeu1ldW_6UaZ2yWBteveM8H4i41f1eDSxHnptpqbUZOV"
-                                    "-qc8cdLWSz9n-zQoY4sFPNReSgA ")
+    llm = groq_llm
 
     # Define the prompt template
     prompt = ChatPromptTemplate.from_template(
@@ -29,16 +34,15 @@ def analyze_sentiment(text):
     )
 
     # Create a chain with the LLM and the prompt
-    chain = LLMChain(llm=llm, prompt=prompt)
+    chain = prompt | llm
 
     # Run the chain with the given input
-    response = chain.run({"text": text})
-    return response.strip()
+    response = chain.invoke({"text": text})
+    return response.content
+
 
 # Example usage
 if __name__ == "__main__":
     text_input = "I am extremely happy with the service provided!"
     sentiment = analyze_sentiment(text_input)
     print(f"Sentiment: {sentiment}")
-
-
