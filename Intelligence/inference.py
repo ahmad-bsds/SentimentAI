@@ -7,6 +7,10 @@
 import os
 from langchain.prompts import ChatPromptTemplate
 from ai_engine import groq_api
+from utils import get_logger
+
+logger = get_logger(__name__)
+
 
 groq_llm = groq_api()
 
@@ -26,16 +30,16 @@ def analyze_sentiment(text):
     prompt = ChatPromptTemplate.from_template(
         """
         You are an AI that performs sentiment analysis. Analyze the following text and provide the sentiment:
-        Text: "{text}".\
+        Text: "{text}"
         Output formate:
         (sentiment)
-        
         Instructions:
         - Do not include any text other than the sentiment.
         - Return only the sentiment in the output.
         - Do not hallucinate.
         - Think before decision making, and always provide correct answer.
         - Do not make variations in sentiment, make your answer final.
+        _ Only add 'Positive', 'Negative','Irrelevant' and 'Neutral' word.
         """
     )
 
@@ -44,13 +48,19 @@ def analyze_sentiment(text):
 
     # Run the chain with the given input
     response = chain.invoke({
-                            "text": text,
+                            "text": text
+
                              })
 
-    return response.content
+    logger.info("Analyzing.....")
+    context = response.content
+
+    logger.info("Analyzed")
+    return context
 
 
-# # Example usage
+
+# Example usage
 # if __name__ == "__main__":
 #     text_input = """
 #                 Retrieve user reviews for the product.
@@ -73,4 +83,4 @@ def analyze_sentiment(text):
 #
 #     """
 #     sentiment = analyze_sentiment(text_input)
-#     print(f"{sentiment}")
+#     print(f"Inference: {sentiment}")
