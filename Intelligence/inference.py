@@ -1,17 +1,12 @@
-# get user requirements
-# return sentimental analysis and recommendation
-# TODO:Write a function which gets xlxs, csv files and returns
-#  recommendation and sentimental analysis.
-
-
 import os
 from langchain.prompts import ChatPromptTemplate
 from ai_engine import groq_api
 from utils import get_logger
 
+# Adding a logger
 logger = get_logger(__name__)
 
-
+# Adding Gemma model from groqapi
 groq_llm = groq_api()
 
 
@@ -54,33 +49,8 @@ def analyze_sentiment(text):
 
     logger.info("Analyzing.....")
     context = response.content
-
     logger.info("Analyzed")
+
+    # Sentiment
     return context
 
-
-
-# Example usage
-# if __name__ == "__main__":
-#     text_input = """
-#                 Retrieve user reviews for the product.
-#
-#     User Reviews:
-#     1. "This product exceeded my expectations! The build quality is excellent, and the performance is top-notch. Highly recommend it to everyone!"
-#        - Sarah J. ⭐⭐⭐⭐⭐
-#
-#     2. "Good value for money. The features are great, but the battery life could be improved. Overall, I'm satisfied with my purchase."
-#        - Michael K. ⭐⭐⭐⭐
-#
-#     3. "I faced some issues with the setup process, but customer service was quick to help me out. Now it works perfectly!"
-#        - Priya L. ⭐⭐⭐⭐
-#
-#     4. "The product is okay, but I expected more based on the description. It's functional, but there are better alternatives out there."
-#        - Daniel R. ⭐⭐⭐
-#
-#     5. "Terrible experience! The product arrived damaged, and I couldn’t get a replacement. Very disappointed with the service."
-#        - Emily S. ⭐
-#
-#     """
-#     sentiment = analyze_sentiment(text_input)
-#     print(f"Inference: {sentiment}")
