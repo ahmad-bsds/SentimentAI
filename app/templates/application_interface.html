@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentiment Insights Platform</title>
+    <title>Insights Pulse</title>
     <!-- Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <style>
         :root {
-            --primary-color: #00ffff;
-            --secondary-color: #0077be;
-            --bg-dark: #0a0a1a;
-            --card-bg: rgba(15, 15, 50, 0.8);
-            --text-light: #e0e0ff;
-            --gradient-primary: linear-gradient(135deg, #00ffff, #4facfe);
-            --gradient-secondary: linear-gradient(135deg, #ff6b6b, #ff9a6b);
+            --primary-color: #4A90E2;
+            --secondary-color: #7ED6DF;
+            --bg-light: #F7F9FC;
+            --card-bg: #FFFFFF;
+            --text-primary: #2C3E50;
+            --text-secondary: #34495E;
+            --gradient-primary: linear-gradient(135deg, #4A90E2, #6A5ACD);
+            --gradient-secondary: linear-gradient(135deg, #FF6B6B, #FFD93D);
         }
 
         * {
@@ -29,8 +30,8 @@
 
         body {
             font-family: 'Inter', 'Arial', sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark), #0c0c2a);
-            color: var(--text-light);
+            background: var(--bg-light);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -44,10 +45,9 @@
             max-width: 1200px;
             background: var(--card-bg);
             border-radius: 20px;
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(76, 144, 226, 0.15);
             padding: 30px;
-            box-shadow: 0 0 60px rgba(0, 255, 255, 0.3);
+            border: 1px solid rgba(74, 144, 226, 0.1);
         }
 
         .grid-layout {
@@ -57,10 +57,11 @@
         }
 
         .input-section, .insights-section {
-            background: rgba(20, 20, 70, 0.6);
+            background: #FFFFFF;
             border-radius: 15px;
             padding: 25px;
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.1);
             display: flex;
             flex-direction: column;
         }
@@ -92,7 +93,7 @@
         .file-upload-btn {
             width: 100%;
             padding: 12px;
-            background: rgba(0, 255, 255, 0.1);
+            background: rgba(74, 144, 226, 0.05);
             border: 2px dashed var(--primary-color);
             color: var(--primary-color);
             text-align: center;
@@ -106,9 +107,9 @@
 
         .input-field {
             width: 100%;
-            background: rgba(30, 30, 80, 0.6);
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            color: white;
+            background: #F9FAFE;
+            border: 2px solid rgba(74, 144, 226, 0.2);
+            color: var(--text-primary);
             padding: 12px;
             border-radius: 10px;
             margin-bottom: 15px;
@@ -117,7 +118,7 @@
         }
 
         .fire-gemma-btn {
-            background: var(--gradient-secondary);
+            background: var(--gradient-primary);
             color: white;
             border: none;
             padding: 15px 25px;
@@ -131,19 +132,26 @@
             margin-top: auto;
         }
 
+        .fire-gemma-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
         .sentiment-distribution {
-            background: rgba(30, 30, 80, 0.6);
+            background: #F9FAFE;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .sentiment-distribution h3 {
             margin-bottom: 10px;
             font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         .chart-container {
@@ -153,16 +161,18 @@
         }
 
         .recommendations {
-            background: rgba(30, 30, 80, 0.6);
+            background: #F9FAFE;
             border-radius: 10px;
             padding: 20px;
             max-height: 300px;
             overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .recommendations h3 {
             font-size: 0.9rem;
             margin-bottom: 10px;
+            color: var(--text-secondary);
         }
 
         .recommendations ul {
@@ -172,11 +182,12 @@
 
         .recommendations li {
             padding: 10px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 0.8rem;
+            color: var(--text-primary);
         }
 
         .recommendations li:last-child {
@@ -184,8 +195,8 @@
         }
 
         .download-report-btn {
-            background: var(--gradient-primary);
-            color: var(--bg-dark);
+            background: var(--gradient-secondary);
+            color: var(--text-primary);
             border: none;
             padding: 15px 25px;
             border-radius: 50px;
@@ -196,6 +207,11 @@
             justify-content: center;
             width: 100%;
             font-size: 0.9rem;
+        }
+
+        .download-report-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
         }
 
         .hidden {
@@ -230,7 +246,7 @@
                 <textarea class="input-field" rows="4" placeholder="Enter your analysis prompt..."></textarea>
 
                 <button class="fire-gemma-btn">
-                    <i class="ri-fire-line"></i> Fire Gemma 2
+                    <i class="ri-fire-line"></i> Analyze Insights
                 </button>
             </div>
 
@@ -271,10 +287,10 @@
         document.getElementById('fileUpload').addEventListener('change', (event) => {
             const file = event.target.files[0];
             const fileUploadBtn = document.querySelector('.file-upload-btn');
-            
+
             if (file) {
                 fileUploadBtn.innerHTML = `
-                    <i class="ri-file-text-line"></i> 
+                    <i class="ri-file-text-line"></i>
                     ${file.name}
                 `;
             }
@@ -286,9 +302,9 @@
             datasets: [{
                 data: [65, 25, 10],
                 backgroundColor: [
-                    '#4bc0c0',   // Positive
-                    '#ffce56',   // Neutral
-                    '#ff6384'    // Negative
+                    '#4A90E2',   // Positive
+                    '#7ED6DF',   // Neutral
+                    '#FF6B6B'    // Negative
                 ],
                 hoverOffset: 4
             }]
@@ -305,7 +321,7 @@
                     legend: {
                         position: 'right',
                         labels: {
-                            color: '#e0e0ff',
+                            color: '#2C3E50',
                             font: {
                                 size: 10
                             }
@@ -348,7 +364,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(insights, null, 2));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "sentiment_insights_report.json");
+            downloadAnchorNode.setAttribute("download", "insights_pulse_report.json");
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
