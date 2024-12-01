@@ -1,5 +1,7 @@
 import pandas as pd
-from Intelligence.inference import analyze_sentiment
+from Intelligence.inference import analyze_sentiment, recommendations
+
+session_id = "0"
 
 
 def perform_analysis(file_type: str, path: str = "sentiment_analysis.csv"):
@@ -13,7 +15,8 @@ def perform_analysis(file_type: str, path: str = "sentiment_analysis.csv"):
     data["y"] = ""
 
     # Sentimental analysis.
-    data["y"] = data["text"].apply(analyze_sentiment)
+    data["y"] = data["text"].apply(lambda text: analyze_sentiment(session_id=session_id, text=text))
+    recom = recommendations(session_id=session_id)
 
     # Results
     df = data.groupby("y")["Month"].count().reset_index()
@@ -24,7 +27,7 @@ def perform_analysis(file_type: str, path: str = "sentiment_analysis.csv"):
     # Replace \n with "".
     df["y"] = df["y"].str.replace(" \n", "", regex=True)
 
-    return df
+    return df, recom
 
 
 # print(perform_analysis("csv"))

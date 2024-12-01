@@ -22,9 +22,24 @@ def file_upload():
 
 @app.route('/submit', methods=['POST', 'GET'])
 def submit():
+    # Sentiment
     data = perform_analysis("csv", "sentiment_analysis.csv")
-    data = data.to_dict(orient='list')
-    return render_template('application_interface.html', data=data)
+    data = data[0].to_dict(orient='list')
+    # Recommendations
+
+    recommendations = [
+        "Improve customer engagement strategies",
+        "Develop targeted marketing campaigns",
+        "Focus on product feature refinements",
+        "Enhance social media presence"
+    ]
+
+    if request.method == 'POST':
+        # Retrieve the text entered the textarea
+        preferences = request.form['preferences']
+        return f'You entered: {preferences}'
+
+    return render_template('application_interface.html', data=data, recommendations=recommendations)
 
 
 if __name__ == '__main__':

@@ -243,7 +243,10 @@
                     </div>
                 </div>
 
-                <textarea class="input-field" rows="4" placeholder="Enter your analysis prompt..."></textarea>
+               <form method="POST" action="/submit">
+                    <textarea class="input-field" rows="4" name="preferences" placeholder="Enter your preferences..."></textarea>
+                </form>
+
 
                <a class="fire-gemma-btn" href="/submit" methods="POST">
                     <i class="ri-fire-line"></i> Analyze Insights
@@ -266,11 +269,18 @@
                 </div>
 
                 <div class="recommendations">
-                    <h3>Growth Recommendations</h3>
-                    <ul id="recommendationsList">
+                <h3>Growth Recommendations</h3>
+                <ul id="recommendationsList">
+                    {% if recommendations %}
+                        {% for statement in recommendations %}
+                            <li><i class="ri-arrow-right-s-line"></i> {{ statement }}</li>
+                        {% endfor %}
+                    {% else %}
                         <li><i class="ri-arrow-right-s-line"></i> Awaiting analysis...</li>
-                    </ul>
-                </div>
+                    {% endif %}
+                </ul>
+            </div>
+
 
                 <button class="download-report-btn hidden" id="downloadReportBtn">
                     <i class="ri-download-cloud-line"></i> Download Insights Report
