@@ -23,7 +23,7 @@ def file_upload():
 @app.route('/submit', methods=['POST', 'GET'])
 def submit():
     data = perform_analysis("csv", "sentiment_analysis.csv")
-    data = data.dict(orient='list')
+    data = data.to_dict(orient='list')
     return render_template('application_interface.html', data=data)
 
 

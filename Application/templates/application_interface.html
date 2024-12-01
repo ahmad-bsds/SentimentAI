@@ -245,9 +245,10 @@
 
                 <textarea class="input-field" rows="4" placeholder="Enter your analysis prompt..."></textarea>
 
-                <button class="fire-gemma-btn">
+               <a class="fire-gemma-btn" href="/submit" methods="POST">
                     <i class="ri-fire-line"></i> Analyze Insights
-                </button>
+               </a>
+
             </div>
 
             <!-- Insights Section -->
@@ -345,19 +346,6 @@
             }
         });
 
-        // Fire Gemma 2 Button
-        document.querySelector('.fire-gemma-btn').addEventListener('click', function() {
-            const recommendationsList = document.getElementById('recommendationsList');
-            recommendationsList.innerHTML = `
-                <li><i class="ri-arrow-right-s-line"></i> Improve customer engagement strategies</li>
-                <li><i class="ri-arrow-right-s-line"></i> Develop targeted marketing campaigns</li>
-                <li><i class="ri-arrow-right-s-line"></i> Focus on product feature refinements</li>
-                <li><i class="ri-arrow-right-s-line"></i> Enhance social media presence</li>
-            `;
-
-            // Show download report button
-            document.getElementById('downloadReportBtn').classList.remove('hidden');
-        });
 
         // Download Report Button
         document.getElementById('downloadReportBtn').addEventListener('click', function() {
