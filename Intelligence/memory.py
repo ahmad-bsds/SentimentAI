@@ -7,7 +7,21 @@ from Intelligence.ai_engine import groq_api
 model = groq_api()
 
 # Human template.
-human_template = f"{{question}}"
+
+human_template = """
+        You are an AI that performs sentiment analysis. Analyze the following text and provide the sentiment:
+        Text: "{question}"
+        Output formate:
+        (sentiment)
+        Instructions:
+        - Do not include any text other than the sentiment.
+        - Return only the sentiment in the output.
+        - Do not hallucinate.
+        - Think before decision making, and always provide correct answer.
+        - Do not make variations in sentiment, make your answer final.
+        - Only add 'Positive', 'Negative','Irrelevant' and 'Neutral' word.
+        """
+
 
 # Prompt template
 prompt_template = ChatPromptTemplate.from_messages(
@@ -16,6 +30,7 @@ prompt_template = ChatPromptTemplate.from_messages(
         ("human", human_template)
     ]
 )
+
 
 # chain.
 chain = prompt_template | model
@@ -50,7 +65,3 @@ def chat_with_history(process_chain=chain):
 #     )
 #
 #     print(result.content)
-
-
-
-
